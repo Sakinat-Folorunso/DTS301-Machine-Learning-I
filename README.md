@@ -88,9 +88,9 @@ The Python notebook introduces:
 
 ### Open Week 0 Python Notebook in Google Colab
 
-> **Note:** The repository-specific Colab badge will be added once the final GitHub repository URL is confirmed.
+## Open Week 0 Python Notebook in Google Colab
 
-[Open Week 0 Python Notebook](./Week_00/Python/DTS301_Week00_Python_for_Data_Science_Student_Centered.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Sakinat-Folorunso/DTS301-Machine-Learning-I/blob/main/Week_00/Python/DTS301_Week00_Python_for_Data_Science_Student_Centered.ipynb)
 
 ---
 
