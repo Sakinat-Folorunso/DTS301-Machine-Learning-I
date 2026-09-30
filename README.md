@@ -86,7 +86,7 @@ The Python notebook introduces:
 - independent EDA challenge
 - reflection
 
-### Open Week 0 Python Notebook in Google Colab
+
 
 ## Open Week 0 Python Notebook in Google Colab
 
