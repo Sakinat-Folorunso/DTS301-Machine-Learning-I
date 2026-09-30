@@ -151,6 +151,38 @@ Students are encouraged to explain what they learned, what remains unclear and h
 
 ---
 
+## Week 1 — Introduction to Machine Learning
+
+Week 1 introduces the fundamental ideas of machine learning, including:
+
+- What machine learning is
+- Conventional programming vs. machine learning
+- Machine-learning terminology
+- Features, targets and feature vectors
+- Classification, regression and unsupervised learning
+- Training and generalisation
+- Training, validation and test sets
+- Exploratory data analysis before modelling
+- Data leakage
+- Responsible machine learning
+- Problem formulation before algorithm selection
+
+### Python — Google Colab
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Sakinat-Folorunso/DTS301-Machine-Learning-I/blob/main/Week_01/Python/DTS301_Week01_Introduction_to_ML_Student_Centered.ipynb)
+
+[View Week 1 Python Notebook on GitHub](./Week_01/Python/DTS301_Week01_Introduction_to_ML_Student_Centered.ipynb)
+
+### R — RStudio
+
+R materials for Week 1 will be added as they are developed.
+
+
+
+
+
+
+
 ## Instructor
 
 **Dr. Sakinat Folorunso**  
