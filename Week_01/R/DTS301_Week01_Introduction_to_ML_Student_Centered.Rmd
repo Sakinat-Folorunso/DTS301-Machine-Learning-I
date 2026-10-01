@@ -1,0 +1,833 @@
+---
+title: "DTS 301 — Machine Learning I"
+subtitle: "Week 1: Introduction to Machine Learning"
+author: "Dr. Sakinat Folorunso — Associate Professor of AI Systems"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+# Course position
+
+**Week 0 → Python for Data Science, NumPy, Pandas, Visualization & EDA**  
+**Week 1 → Introduction to Machine Learning**  
+**Week 2 → Data Representation, Linear Transformations & Matrix–Vector Operations**
+
+> **Learning cycle:** Read → Predict → Run → Observe → Explain → Reflect
+
+## RStudio pathway
+
+This Week 1 practical is designed for **RStudio** and **R Markdown**. Work through the explanations, run the code chunks, inspect the output, and complete the activities in your own words.
+
+# 1. Warm-up: What does it mean for a computer to "learn"?
+
+A lecturer wants to predict whether a student is likely to pass a course.
+
+Available information includes:
+
+- previous test scores;
+- attendance;
+- assignment performance;
+- study hours.
+
+A rule-based approach might be:
+
+```text
+IF attendance > 75%
+AND test score > 50%
+THEN predict PASS
+```
+
+Another approach is to provide a computer with many previous student records and their outcomes and allow an algorithm to learn a relationship between the information and the outcome.
+
+### Think before you continue
+
+1. What is different between these two approaches?
+2. Which information would the computer need in order to learn from previous examples?
+3. What could go wrong if the historical examples are poor or unrepresentative?
+
+### Your response
+
+**Q1. Difference between the two approaches:**
+
+
+**Q2. Information required:**
+
+
+**Q3. What could go wrong?**
+
+# 2. Conventional programming versus machine learning
+
+In conventional programming:
+
+\[
+\text{Rules} + \text{Data} \rightarrow \text{Output}
+\]
+
+In machine learning:
+
+\[
+\text{Data} + \text{Examples/Targets} \rightarrow \text{Learned Model}
+\]
+
+The learned model can then be used on new data:
+
+\[
+\text{New Data} + \text{Learned Model} \rightarrow \text{Prediction}
+\]
+
+Machine learning is concerned with methods that learn useful patterns or relationships from data and use what was learned to make predictions or discover structure.
+
+# 3. Machine-learning vocabulary
+
+| Term | Meaning |
+|---|---|
+| **Observation / instance** | One individual example or record |
+| **Variable** | A measurable or recorded property |
+| **Feature** | An input variable used by a model |
+| **Target / label** | The outcome a supervised model is asked to predict |
+| **Dataset** | Collection of observations |
+| **Model** | A mathematical/computational representation learned from data |
+| **Training** | Process of learning model parameters from data |
+| **Prediction** | Model output for an observation |
+| **Generalization** | Ability to perform well on unseen data |
+
+### Example
+
+| Study hours | Attendance | Test score | Final result |
+|---:|---:|---:|---|
+| 5 | 80 | 65 | Pass |
+| 2 | 55 | 42 | Fail |
+| 7 | 90 | 78 | Pass |
+
+Each row is an **observation**. The first three columns are possible **features**. `Final result` is the **target**.
+
+# 4. From a real problem to an ML problem
+
+Machine learning should begin with a **problem definition**, not with an algorithm.
+
+Consider:
+
+> Can we predict whether a loan applicant will repay a loan?
+
+Ask:
+
+1. What is one observation?
+2. What information is available when the prediction is made?
+3. What is the target?
+4. Is the target categorical or numerical?
+5. What would a useful prediction look like?
+6. What are the consequences of a wrong prediction?
+
+### Student activity
+
+For the loan example, complete:
+
+- Observation =
+- Possible features =
+- Target =
+- Type of task =
+- One ethical/data-quality concern =
+
+# 5. The Iris dataset: our first ML dataset
+
+We use the classic Iris dataset. Each observation describes an iris flower using four measurements:
+
+- sepal length;
+- sepal width;
+- petal length;
+- petal width.
+
+The target identifies the flower species.
+
+```{r}
+# Load the built-in Iris dataset.
+data(iris)
+
+# Display the first six observations.
+head(iris)
+
+# Display the dimensions of the dataset.
+dim(iris)
+```
+
+## Observe
+
+The dataset contains **150 observations**, **4 input features**, and **1 target column**.
+
+In R, the four measurement columns form the input feature matrix \(X\), while `Species` is the target.
+
+```{r}
+# Select the four numerical feature columns.
+X <- iris[, 1:4]
+
+# Select the target column.
+y <- iris$Species
+
+# Display the dimensions of X.
+dim(X)
+
+# Display the dimensions of y as a vector.
+length(y)
+
+# Display the feature names.
+names(X)
+
+# Display the target classes.
+levels(y)
+```
+
+# 6. Dataset representation
+
+If there are \(n\) observations and \(p\) features:
+
+\[
+X \in \mathbb{R}^{n \times p}
+\]
+
+For Iris:
+
+\[
+X \in \mathbb{R}^{150 \times 4}
+\]
+
+Each observation can be represented as a feature vector:
+
+\[
+x_i =
+\begin{bmatrix}
+x_{i1}\\
+x_{i2}\\
+\vdots\\
+x_{ip}
+\end{bmatrix}
+\]
+
+For example, the first iris observation is:
+
+```{r}
+# Extract the first observation as a numerical feature vector.
+first_observation <- as.numeric(X[1, ])
+
+# Display the feature vector.
+first_observation
+
+# Count the number of features.
+length(first_observation)
+```
+
+The feature vector is a numerical representation of one observation.
+
+This is the bridge between the data-analysis skills from Week 0 and the mathematical representation of machine learning that we develop further in Week 2.
+
+# 7. Classification
+
+Classification is a supervised-learning task in which the target represents a category or class.
+
+Iris has three classes:
+
+\[
+\{\text{setosa},\text{versicolor},\text{virginica}\}
+\]
+
+Unlike numerical codes, these names make it clear that the categories are not quantities.
+
+```{r}
+# Count the observations in each Iris species.
+table(y)
+
+# Display the class names.
+levels(y)
+```
+
+### Think
+
+Would you call Iris a classification problem or a regression problem?
+
+**Why?**
+
+### Answer
+
+Iris is a **classification** problem because the target identifies one of a finite set of categories/classes.
+
+# 8. Regression
+
+Regression is a supervised-learning task in which the target is typically numerical.
+
+Examples include predicting:
+
+- house price;
+- rainfall amount;
+- temperature;
+- electricity demand;
+- student examination score.
+
+A simplified formulation is:
+
+\[
+y \in \mathbb{R}
+\]
+
+For example:
+
+\[
+\text{score}=72.5
+\]
+
+is a numerical target rather than a category.
+
+| Problem | Target | ML task |
+|---|---|---|
+| Predict flower species | Category | Classification |
+| Predict house price | Number | Regression |
+| Predict rainfall amount | Number | Regression |
+| Predict disease class | Category | Classification |
+
+# 9. Unsupervised learning
+
+In supervised learning, we have input \(X\) and target \(y\).
+
+In unsupervised learning, we generally have input data \(X\) without a supplied target.
+
+The goal may be to discover:
+
+- groups;
+- patterns;
+- structure;
+- lower-dimensional representations;
+- unusual observations.
+
+For example:
+
+> Can we group customers according to similarities in their behaviour?
+
+We will study clustering and dimensionality reduction later in the course.
+
+# 10. Supervised learning mathematically
+
+Suppose our dataset is:
+
+\[
+D=\{(x_i,y_i)\}_{i=1}^{n}
+\]
+
+where \(x_i\) is the feature vector for observation \(i\), and \(y_i\) is the corresponding target.
+
+A supervised-learning algorithm attempts to learn:
+
+\[
+\hat{y}=f_{\theta}(x)
+\]
+
+where:
+
+- \(x\) = input features;
+- \(y\) = actual target;
+- \(\hat{y}\) = predicted target;
+- \(f_{\theta}\) = learned model;
+- \(\theta\) = model parameters.
+
+In plain language, we want the computer to learn a useful relationship between the inputs and target so it can make predictions for new observations.
+
+# 11. Prediction and loss
+
+Suppose the true examination score is:
+
+\[
+y=70
+\]
+
+Two models make these predictions:
+
+- Model A: \(\hat y=64\)
+- Model B: \(\hat y=69\)
+
+One simple loss function is squared error:
+
+\[
+L(y,\hat y)=(y-\hat y)^2
+\]
+
+```{r}
+# Store the actual examination score.
+actual <- 70
+
+# Store Model A's prediction.
+prediction_A <- 64
+
+# Store Model B's prediction.
+prediction_B <- 69
+
+# Calculate Model A's squared error.
+loss_A <- (actual - prediction_A)^2
+
+# Calculate Model B's squared error.
+loss_B <- (actual - prediction_B)^2
+
+# Display both losses.
+loss_A
+loss_B
+```
+
+### Think
+
+Which prediction is closer to the true value?
+
+Which model has the smaller squared error?
+
+A loss function quantifies how different a prediction is from the actual target.
+
+# 12. Empirical risk
+
+For \(n\) observations, average loss can be written as:
+
+\[
+\hat R(\theta)
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+L(f_{\theta}(x_i),y_i)
+\]
+
+This is one way to express **empirical risk**.
+
+The broad learning idea is to find model parameters that perform well according to an appropriate objective on training data while still aiming for good performance on unseen data.
+
+# 13. Training versus generalization
+
+A model can perform extremely well on examples it has already seen. That does not automatically mean it will perform well on new observations.
+
+### Training performance
+
+How well does the model perform on data used during learning?
+
+### Generalization
+
+How well does the model perform on data it did not see during training?
+
+The goal is not simply to memorize the training data. The goal is to learn patterns that remain useful for new observations.
+
+### Analogy
+
+Imagine a student memorizes the exact answers to 20 practice questions. The student scores 100% when those exact questions appear again but performs poorly on new questions.
+
+A model can face a similar problem.
+
+# 14. Training, validation and test data
+
+A common workflow separates data into different roles:
+
+```text
+Dataset
+   |
+   +---- Training set
+   |       ↓
+   |    Learn model
+   |
+   +---- Validation set
+   |       ↓
+   |    Tune/select
+   |
+   +---- Test set
+           ↓
+      Final evaluation
+```
+
+The exact workflow can vary depending on the dataset, algorithm and experimental design.
+
+The key principle is:
+
+> **Evaluation data should provide an honest estimate of performance on unseen data.**
+
+# 15. EDA before modelling
+
+Before training a model, inspect:
+
+- dimensions;
+- data types;
+- missing values;
+- distributions;
+- relationships;
+- unusual observations.
+
+Let's perform a quick EDA on Iris.
+
+```{r}
+# Display the dimensions of the Iris dataset.
+dim(iris)
+
+# Count missing values in each column.
+colSums(is.na(iris))
+
+# Display summary statistics for the dataset.
+summary(iris)
+```
+
+## Visualisation
+
+```{r}
+# Create a scatter plot of sepal length against petal length.
+plot(
+  iris$Sepal.Length,
+  iris$Petal.Length,
+  xlab = "Sepal length (cm)",
+  ylab = "Petal length (cm)",
+  main = "Iris: Sepal Length vs Petal Length"
+)
+```
+
+### Interpret the plot
+
+Write at least **two observations**.
+
+1.
+2.
+3.
+
+# 16. Data leakage
+
+Data leakage occurs when information that would not legitimately be available at prediction time enters the modelling process.
+
+Suppose we want to predict whether a student will graduate **before graduation**.
+
+Potential features include:
+
+- first-year GPA;
+- attendance;
+- assignment performance;
+- number of completed courses.
+
+But including **final graduation status** as a feature would be inappropriate because it is the outcome itself.
+
+### Key question
+
+> **Would this information genuinely be available at the moment the prediction is supposed to be made?**
+
+If not, we may have leakage.
+
+# 17. Responsible machine learning
+
+Machine learning systems are built from data. Technical performance is therefore not the only issue.
+
+### Data
+
+- Who collected it?
+- How was it collected?
+- Who is represented?
+- Who is missing?
+
+### Target
+
+- Is the target clearly defined?
+- Is it measured reliably?
+- Does it represent what we actually care about?
+
+### Features
+
+- Are the features available at prediction time?
+- Could they contain leakage?
+- Are they appropriate for the task?
+
+### Consequences
+
+- What happens when the model is wrong?
+- Who is affected?
+- How will predictions be used?
+
+# 18. Student-centred activity: ML Problem Detective
+
+For each scenario:
+
+1. Identify one observation.
+2. Identify possible features \(X\).
+3. Identify the target \(y\), if there is one.
+4. Decide whether it is classification, regression or unsupervised learning.
+5. Identify one data-quality, leakage or deployment concern.
+
+### Scenario A — Fraud detection
+
+A bank wants to identify whether a transaction is potentially fraudulent.
+
+### Scenario B — House prices
+
+A real-estate company wants to predict the selling price of a house.
+
+### Scenario C — Customer segmentation
+
+A retailer wants to group customers according to purchasing behaviour, but has no predefined customer-group labels.
+
+### Scenario D — Yoruba emotion classification
+
+A research team wants to classify Yoruba-language text into predefined emotional categories.
+
+### Scenario E — Rainfall prediction
+
+A meteorological team wants to predict rainfall amount using weather measurements.
+
+## Group discussion record
+
+### Scenario A
+
+Observation:
+
+Features:
+
+Target:
+
+Task type:
+
+Concern:
+
+### Scenario B
+
+Observation:
+
+Features:
+
+Target:
+
+Task type:
+
+Concern:
+
+### Scenario C
+
+Observation:
+
+Features:
+
+Target:
+
+Task type:
+
+Concern:
+
+### Scenario D
+
+Observation:
+
+Features:
+
+Target:
+
+Task type:
+
+Concern:
+
+### Scenario E
+
+Observation:
+
+Features:
+
+Target:
+
+Task type:
+
+Concern:
+
+# 19. Mathematical formulation task
+
+Choose one scenario.
+
+Write the problem using:
+
+\[
+\hat y=f_{\theta}(x)
+\]
+
+Then explain:
+
+- What is \(x\)?
+- What is \(y\)?
+- What does \(\hat y\) represent?
+- What would the learned model \(f_{\theta}\) do?
+- What would count as a useful prediction?
+
+**Scenario:**
+
+
+**\(x\):**
+
+
+**\(y\):**
+
+
+**\(\hat y\):**
+
+
+**\(f_{\theta}\):**
+
+
+**Explanation:**
+
+# 20. Iris mini-practical
+
+Work independently.
+
+### Task 1
+
+State:
+
+- number of observations;
+- number of features;
+- number of target classes.
+
+### Task 2
+
+Print the dimensions of \(X\) and the length of \(y\).
+
+### Task 3
+
+Display one feature vector.
+
+### Task 4
+
+Create a visualization involving two features.
+
+### Task 5
+
+Write **three EDA observations**.
+
+### Task 6
+
+Explain why Iris is a classification problem.
+
+### Task 7
+
+Explain the difference between a feature and a target.
+
+```{r}
+# Your work starts here.
+
+# Task 1
+
+
+# Task 2
+
+
+# Task 3
+
+
+# Task 4
+
+
+# Task 5
+
+
+# Task 6
+
+
+# Task 7
+```
+
+# 21. Class Task / Do It Yourself
+
+## ML Problem Formulation Challenge
+
+Choose a real problem from:
+
+- education;
+- agriculture;
+- healthcare;
+- finance;
+- transportation;
+- language;
+- music/culture;
+- environment.
+
+**Do not start by choosing an algorithm. Start with the problem.**
+
+Complete:
+
+1. What is one observation?
+2. What are the possible features?
+3. What is the target, if there is one?
+4. Is this classification, regression or unsupervised learning?
+5. Write the mathematical abstraction \(\hat y=f_{\theta}(x)\).
+6. What information would be unavailable at prediction time?
+7. Identify one possible source of data leakage.
+8. Identify one possible data-quality concern.
+9. What would a wrong prediction mean in the real world?
+
+### Deliverable
+
+**Problem → Data → Features → Target → ML task → Mathematical formulation → Risk/concern**
+
+# 22. Reflection
+
+Answer these questions honestly.
+
+1. In your own words, what is machine learning?
+2. What is the difference between conventional programming and machine learning?
+3. What is an observation?
+4. What is a feature?
+5. What is a target?
+6. What is the difference between classification and regression?
+7. When would unsupervised learning be appropriate?
+8. What does \(X \in \mathbb{R}^{n\times p}\) mean?
+9. What does \(\hat y=f_{\theta}(x)\) mean?
+10. Why is generalization more important than simply memorizing training examples?
+11. Why is EDA important before modelling?
+12. What is data leakage?
+13. What question will you ask yourself before including a feature in a model?
+
+### Exit ticket
+
+> **The most important idea I learned this week is __________ because __________.**
+
+# 23. Week 1 checklist
+
+Before moving to Week 2, check yourself.
+
+- [ ] I can explain machine learning in my own words.
+- [ ] I can distinguish conventional programming from machine learning.
+- [ ] I understand observation, variable, feature and target.
+- [ ] I can distinguish classification and regression.
+- [ ] I understand the basic idea of unsupervised learning.
+- [ ] I can represent a dataset as \(X\) and \(y\).
+- [ ] I understand \(X \in \mathbb{R}^{n\times p}\).
+- [ ] I understand the meaning of \(\hat y=f_{\theta}(x)\).
+- [ ] I understand the purpose of a loss function.
+- [ ] I understand training versus unseen data.
+- [ ] I understand the basic idea of generalization.
+- [ ] I know why EDA comes before modelling.
+- [ ] I can identify a simple data-leakage problem.
+- [ ] I can formulate a real-world problem as an ML problem.
+
+# 24. Bridge to Week 2
+
+You can now describe a machine-learning problem in terms of:
+
+\[
+X,\quad y,\quad x_i,\quad \hat y,\quad f_{\theta}
+\]
+
+But we need to go deeper.
+
+How exactly do we represent information mathematically?
+
+How do vectors and matrices transform data?
+
+What does multiplication between matrices and vectors mean?
+
+How can transformations change the representation of our data?
+
+These questions lead directly to:
+
+# Week 2 — Data Representation, Linear Transformations & Matrix–Vector Operations
+
+Your R skills from Week 0 will become the computational tools for exploring these mathematical ideas.
+
+---
+
+## Instructor contact
+
+**Dr. Sakinat Folorunso**  
+Associate Professor of AI Systems  
+Department of Computer Science, Olabisi Onabanjo University  
+**Email:** sakinat.folorunso@oouagoiwoye.edu.ng
+
+**DTS 301 — Machine Learning I**
