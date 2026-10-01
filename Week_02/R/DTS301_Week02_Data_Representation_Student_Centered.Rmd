@@ -1,0 +1,653 @@
+---
+title: "DTS 301 — Machine Learning I: Week 2"
+subtitle: "Data Representation, Features, Feature Vectors & Matrix–Vector Operations"
+author: "Dr. Sakinat Folorunso"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+# Week 2
+
+**Instructor:** Dr. Sakinat Folorunso  
+**Department:** Computer Science, Olabisi Onabanjo University (OOU)
+
+## Learning Hours (LH)
+
+Representation of data; features; feature vectors; linear transformations; matrix and vector operations in data representation.
+
+## Practical Hours (PH)
+
+Create feature matrices and vectors; perform basic matrix-vector operations; inspect and transform a small tabular dataset.
+
+---
+
+## How to use this workbook
+
+This is a **student-centered working workbook** for RStudio.
+
+Use the learning cycle:
+
+**Read → Predict → Run → Inspect → Explain → Reflect**
+
+For every worked example:
+
+1. Read the problem.
+2. Predict what should happen.
+3. Run the R code.
+4. Inspect the output.
+5. Explain what the output means.
+6. Reflect on how the idea connects to machine learning.
+
+> **Core idea:** Before an algorithm can learn, the data must be represented in a form that the algorithm can use.
+
+# 1. Week 1 → Week 2
+
+In Week 1, we moved from **working with data** to **learning from data**.
+
+We introduced observations, features, targets, classification, regression, supervised learning, training, generalization, and the idea of a dataset as inputs and outputs.
+
+This week we ask:
+
+**How exactly do we represent observations and features mathematically?**
+
+The progression is:
+
+**Problem → Data → Features → Representation → Mathematical Operations → Prediction**
+
+# 2. Learning outcomes
+
+By the end of this workbook, you should be able to:
+
+1. Identify features in a dataset.
+2. Construct a feature vector for one observation.
+3. Construct a feature matrix for several observations.
+4. Explain the meaning of rows and columns in a feature matrix.
+5. Perform vector addition, subtraction, scalar multiplication and dot products.
+6. Perform matrix–vector multiplication.
+7. Check whether matrix dimensions are compatible for multiplication.
+8. Describe a linear transformation.
+9. Apply a simple transformation to a small dataset.
+10. Explain why representation matters before model training.
+
+# 3. From a real-world observation to data
+
+Consider:
+
+| Student | Study Hours | Attendance | Previous Score |
+|---|---:|---:|---:|
+| A | 6 | 85 | 68 |
+| B | 8 | 92 | 75 |
+| C | 4 | 70 | 55 |
+
+For Student A, the numerical information can be represented as:
+
+**x = (6, 85, 68)**
+
+This is a **feature vector**.
+
+## R example: one feature vector
+
+```{r}
+# Create one feature vector for Student A.
+x <- c(6, 85, 68)
+
+# Display the feature vector.
+x
+
+# Display the number of values in the feature vector.
+length(x)
+```
+
+### Observe
+
+The vector contains three values, so Student A is represented using **three features**.
+
+# 4. Feature vectors
+
+For an observation i with p features:
+
+**xᵢ = (xᵢ₁, xᵢ₂, …, xᵢₚ)**
+
+For Student A:
+
+**x = (6, 85, 68)**
+
+The important idea is that an observation is converted into a numerical representation that mathematical operations can use.
+
+## Iris example
+
+The Iris dataset has four numerical features:
+
+- sepal length
+- sepal width
+- petal length
+- petal width
+
+One flower can therefore be represented by a four-dimensional feature vector.
+
+```{r}
+# Create a hypothetical Iris feature vector with four measurements.
+iris_x <- c(5.1, 3.5, 1.4, 0.2)
+
+# Display the feature vector.
+iris_x
+
+# Count the number of features.
+length(iris_x)
+```
+
+# 5. Feature matrices
+
+When we have several observations, their feature vectors can be placed together to form a **feature matrix**.
+
+For n observations and p features:
+
+**X ∈ ℝⁿˣᵖ**
+
+Rows represent observations.  
+Columns represent features.
+
+For the student dataset, there are three observations and three features:
+
+**X ∈ ℝ³ˣ³**
+
+## R example: create a feature matrix
+
+```{r}
+# Create the feature matrix for the three students.
+X <- matrix(
+  c(
+    6, 85, 68,
+    8, 92, 75,
+    4, 70, 55
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+
+# Display the feature matrix.
+X
+
+# Display the dimensions of the matrix.
+dim(X)
+
+# Display the number of observations.
+nrow(X)
+
+# Display the number of features.
+ncol(X)
+```
+
+## Check your understanding
+
+If a dataset contains **500 observations and 10 features**, its feature matrix has shape:
+
+**500 × 10**
+
+In mathematical notation:
+
+**X ∈ ℝ⁵⁰⁰ˣ¹⁰**
+
+# 6. Inspecting rows and columns
+
+Rows correspond to observations.
+
+Columns correspond to features.
+
+```{r}
+# Select the first row, representing Student A.
+student_A <- X[1, ]
+
+# Display Student A's feature vector.
+student_A
+
+# Select the first column, representing study hours.
+study_hours <- X[, 1]
+
+# Display study hours for all students.
+study_hours
+
+# Select the second column, representing attendance.
+attendance <- X[, 2]
+
+# Display attendance for all students.
+attendance
+```
+
+## Add meaningful column names
+
+```{r}
+# Assign descriptive names to the feature columns.
+colnames(X) <- c("Study_Hours", "Attendance", "Previous_Score")
+
+# Display the labelled feature matrix.
+X
+```
+
+# 7. Vector operations
+
+Let:
+
+**a = (2, 4, 6)**
+
+**b = (1, 3, 5)**
+
+We can perform:
+
+- addition
+- subtraction
+- scalar multiplication
+- dot product
+
+```{r}
+# Create vector a.
+a <- c(2, 4, 6)
+
+# Create vector b.
+b <- c(1, 3, 5)
+
+# Add the vectors element by element.
+a + b
+
+# Subtract vector b from vector a.
+a - b
+
+# Multiply vector a by the scalar value 2.
+2 * a
+
+# Calculate the dot product using the sum of element-wise products.
+sum(a * b)
+```
+
+## Dot product
+
+For:
+
+**a = (2, 4, 6)**
+
+**b = (1, 3, 5)**
+
+the dot product is:
+
+**a · b = (2×1) + (4×3) + (6×5) = 44**
+
+### Predict
+
+What should this give?
+
+**(3, 2, 1) · (1, 2, 3)**
+
+```{r}
+# Create the first prediction vector.
+u <- c(3, 2, 1)
+
+# Create the second prediction vector.
+v <- c(1, 2, 3)
+
+# Calculate the dot product.
+sum(u * v)
+```
+
+# 8. Matrix–vector multiplication
+
+Consider:
+
+**A = [[1, 2], [3, 4]]**
+
+and:
+
+**x = (5, 6)**
+
+The multiplication gives:
+
+**Ax = (17, 39)**
+
+In R, matrix multiplication uses `%*%`.
+
+```{r}
+# Create the 2 by 2 matrix A.
+A <- matrix(
+  c(
+    1, 2,
+    3, 4
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+# Create the two-element vector x.
+x <- c(5, 6)
+
+# Multiply matrix A by vector x.
+Ax <- A %*% x
+
+# Display the result.
+Ax
+
+# Display the dimensions of the result.
+dim(Ax)
+```
+
+# 9. Matrix dimension compatibility
+
+Matrix multiplication is possible when the **inner dimensions match**.
+
+For example:
+
+`(3 × 2)(2 × 1)` is valid.
+
+The result has shape:
+
+`3 × 1`
+
+But:
+
+`(3 × 2)(3 × 1)` is not valid because the inner dimensions do not match.
+
+For:
+
+`(m × n)(n × p)`
+
+the result has shape:
+
+`m × p`
+
+## R example
+
+```{r}
+# Create a 3 by 2 matrix.
+M <- matrix(
+  c(
+    1, 2,
+    3, 4,
+    5, 6
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+
+# Create a compatible two-element vector.
+v2 <- c(10, 20)
+
+# Multiply the matrix by the vector.
+result <- M %*% v2
+
+# Display the result.
+result
+
+# Display the dimensions of the result.
+dim(result)
+```
+
+# 10. Linear transformations
+
+A linear transformation changes a vector using a matrix.
+
+Consider:
+
+**A = [[2, 0], [0, 2]]**
+
+and:
+
+**x = (2, 3)**
+
+Then:
+
+**Ax = (4, 6)**
+
+The transformation doubles both coordinates.
+
+```{r}
+# Create a simple scaling matrix.
+scale <- matrix(
+  c(
+    2, 0,
+    0, 2
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+# Create a two-dimensional input vector.
+point <- c(2, 3)
+
+# Apply the linear transformation.
+transformed_point <- scale %*% point
+
+# Display the original vector.
+point
+
+# Display the transformed vector.
+transformed_point
+```
+
+# 11. A simple feature transformation
+
+Features can have different numerical scales.
+
+For example:
+
+- study hours may range from 0 to 20
+- attendance may range from 0 to 100
+- scores may range from 0 to 100
+
+One simple transformation is:
+
+**x′ = x / 100**
+
+This is only a simple demonstration. Later topics will introduce more systematic feature-scaling methods.
+
+```{r}
+# Create a copy of the feature matrix so the original remains unchanged.
+X_scaled <- X
+
+# Scale the attendance column from 0–100 to 0–1.
+X_scaled[, "Attendance"] <- X_scaled[, "Attendance"] / 100
+
+# Scale the previous-score column from 0–100 to 0–1.
+X_scaled[, "Previous_Score"] <- X_scaled[, "Previous_Score"] / 100
+
+# Display the transformed matrix.
+X_scaled
+```
+
+## Inspect and explain
+
+Ask yourself:
+
+1. Which columns changed?
+2. Which column did not change?
+3. Why might transforming features be useful?
+4. Does transforming a feature automatically make the data better?
+
+Write your explanation in your own words.
+
+# 12. Class Task — Representation Detective
+
+Work in pairs.
+
+Choose one scenario:
+
+### Healthcare
+Possible features:
+- age
+- blood pressure
+- glucose level
+- previous diagnosis
+
+### Education
+Possible features:
+- study hours
+- attendance
+- assignment score
+- previous examination score
+
+### Agriculture
+Possible features:
+- rainfall
+- temperature
+- soil moisture
+- fertilizer quantity
+
+### Music
+Possible features:
+- tempo
+- spectral features
+- duration
+- other extracted audio features
+
+For your chosen scenario:
+
+1. Identify one observation.
+2. Identify at least three features.
+3. Write a possible feature vector.
+4. Explain what one row of the feature matrix represents.
+5. Explain what one column represents.
+
+# 13. Do It Yourself
+
+Use this dataset:
+
+| Student | Study Hours | Attendance | Assignment | Previous Score |
+|---|---:|---:|---:|---:|
+| A | 5 | 80 | 72 | 65 |
+| B | 8 | 90 | 85 | 78 |
+| C | 3 | 65 | 55 | 50 |
+| D | 7 | 88 | 80 | 74 |
+
+## Task 1 — Create the feature matrix
+
+```{r}
+# Create the feature matrix for the four students.
+X_task <- matrix(
+  c(
+    5, 80, 72, 65,
+    8, 90, 85, 78,
+    3, 65, 55, 50,
+    7, 88, 80, 74
+  ),
+  nrow = 4,
+  byrow = TRUE
+)
+
+# Give the feature columns meaningful names.
+colnames(X_task) <- c(
+  "Study_Hours",
+  "Attendance",
+  "Assignment",
+  "Previous_Score"
+)
+
+# Display the feature matrix.
+X_task
+
+# Display its dimensions.
+dim(X_task)
+```
+
+## Task 2 — Extract Student B
+
+```{r}
+# Extract the second row, representing Student B.
+student_B <- X_task[2, ]
+
+# Display Student B's feature vector.
+student_B
+```
+
+## Task 3 — Extract attendance
+
+```{r}
+# Extract the attendance column.
+attendance_task <- X_task[, "Attendance"]
+
+# Display attendance values.
+attendance_task
+```
+
+## Task 4 — Dot product of the first two students
+
+```{r}
+# Extract Student A's feature vector.
+student_A_task <- X_task[1, ]
+
+# Extract Student B's feature vector.
+student_B_task <- X_task[2, ]
+
+# Calculate the dot product.
+sum(student_A_task * student_B_task)
+```
+
+## Task 5 — Transform attendance and assignment
+
+```{r}
+# Create a copy of the task matrix.
+X_task_scaled <- X_task
+
+# Scale attendance to a 0–1 range.
+X_task_scaled[, "Attendance"] <- X_task_scaled[, "Attendance"] / 100
+
+# Scale assignment to a 0–1 range.
+X_task_scaled[, "Assignment"] <- X_task_scaled[, "Assignment"] / 100
+
+# Display the transformed matrix.
+X_task_scaled
+```
+
+### Explain
+
+Why does the transformed matrix still represent the same students and the same features even though some numerical values changed?
+
+# 14. Reflection
+
+Complete these statements:
+
+1. A feature is ____________________________________________.
+2. A feature vector represents ______________________________.
+3. In a feature matrix, rows represent _______________________.
+4. In a feature matrix, columns represent ____________________.
+5. Matrix–vector multiplication is valid when ________________.
+6. A linear transformation can ______________________________.
+7. Data representation matters because _______________________.
+
+## One-minute exit question
+
+If a machine-learning dataset has **1,000 observations and 12 features**, what is the shape of its feature matrix?
+
+**Your answer:** __________________
+
+# 15. Week 2 checklist
+
+Before moving on, check that you can:
+
+- [ ] identify features in a dataset
+- [ ] construct a feature vector
+- [ ] construct a feature matrix
+- [ ] explain rows and columns
+- [ ] inspect matrix dimensions in R
+- [ ] perform vector addition and subtraction
+- [ ] perform scalar multiplication
+- [ ] calculate a dot product
+- [ ] perform matrix–vector multiplication
+- [ ] check matrix dimensions
+- [ ] explain a simple linear transformation
+- [ ] apply a simple feature transformation
+- [ ] explain why representation matters
+
+# Bridge to Week 3
+
+You now know how data becomes a numerical representation.
+
+Next we ask:
+
+**What kinds of prediction problems can we formulate from these representations?**
+
+## Week 3
+
+**Classification, Regression, Problem Formulation & Probability**
+
+The progression continues:
+
+**Problem → Data → Features → Representation → Prediction Problem → Model → Evaluation**
