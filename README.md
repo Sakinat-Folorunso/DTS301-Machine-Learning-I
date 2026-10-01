@@ -25,6 +25,17 @@ Each practical week follows:
 
 **Read → Predict → Run → Inspect → Explain → Practise → Do It Yourself → Reflect → Bridge**
 
+
+## 📘 Lecturer Teaching Notes
+
+The complete lecturer-facing teaching notes are maintained in a continuously updated master Google Document.
+
+👉 **[Open Master Teaching Class Notes](https://docs.google.com/document/d/1mNFNI8wAW0ZAKOx5Q3jKe9QS4ls8gvoH/edit)**
+
+
+
+
+
 ---
 
 ## Learning Pathways
